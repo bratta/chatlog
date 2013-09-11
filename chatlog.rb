@@ -3,7 +3,7 @@ Bundler.require
 require "yaml"
 require "./parse.rb"
 
-get "/" do
+get "/chatlog" do
   content_type :json
   parse_log.to_json
 end
