@@ -56,6 +56,12 @@ module Chatlog
         results << m[1]
         results << m[2]
       end
+      if results.empty?
+        message.match(/^* (\w+)\s(.*)$/) do |m|
+          results << m[1]
+          results << "#{m[1]} #{m[2]}"
+        end
+      end
       results = ["unknown", "error parsing message: #{message}"] if results.empty?
       results
     end
@@ -64,6 +70,8 @@ module Chatlog
       type = :death
       if message.match(/^</)
         type = :chat
+      elsif message.match(/^\* \w+/)
+        type = :emote
       elsif message.match(/^\w+ (left|joined) the game$/)
         type = :join
       end
