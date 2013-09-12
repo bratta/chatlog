@@ -1,0 +1,21 @@
+%form
+  %input{type: "checkbox", id: "joins", checked: "checked"}
+  Hide join/leave messages?
+
+%table.table.table-hover.table-responsive
+  %thead
+    %tr
+      %th.timestamp Time
+      %th.player Player
+      %th.avatar Avatar
+      %th.content Content
+  %tbody
+    - @messages.each do |message|
+      - extra_class = "danger" if message[:type] == :death
+      - extra_class = "warning" if message[:type] == :join
+      %tr{class: "#{message[:type]} #{extra_class}"}
+        %td.timestamp= message[:timestamp]
+        %td.player= message[:player]
+        %td.avatar
+          %img{src: "https://minotar.net/avatar/#{message[:player]}/24"}
+        %td.content= message[:content]

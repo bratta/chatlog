@@ -1,6 +1,3 @@
-require "json"
-require "time"
-
 module Chatlog
   class Parse
     attr_accessor :logfile, :output
@@ -11,7 +8,7 @@ module Chatlog
     SERVER_MESSAGES = [
       "Turned off", "Saving", "Saved", "Stopping", "Stopped", "Closing", "Closed", "Default game type", 
       "Generating", "Preparing", "Done (", "Starting", "Started", "Loading", "Turned on", "[Server]",
-      "Setting"
+      "Setting", "Disconnecting"
     ]
 
     def initialize(logfile)
@@ -40,7 +37,37 @@ module Chatlog
         message[:content].match(/^\w+ lost connection:/) ||
         message[:content].match(/^\w+\[.*\] logged in with entity id/) ||
         SERVER_MESSAGES.any? { |sm| message[:content].index(sm) == 0 }
+      end.map do |message|
+        player, content = split_player_message(message[:content])
+        { 
+          timestamp: message[:timestamp],
+          player: player,
+          type: type_from_message(message[:content]),
+          content: content
+        }
       end
+    end
+
+    private
+
+    def split_player_message(message)
+      results = []
+      message.match(/^<?(\w+)>?\s(.*)$/) do |m|
+        results << m[1]
+        results << m[2]
+      end
+      results = ["unknown", "error parsing message: #{message}"] if results.empty?
+      results
+    end
+
+    def type_from_message(message)
+      type = :death
+      if message.match(/^</)
+        type = :chat
+      elsif message.match(/^\w+ (left|joined) the game$/)
+        type = :join
+      end
+      type
     end
   end
 end
