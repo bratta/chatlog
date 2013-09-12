@@ -34,7 +34,7 @@ module Chatlog
       @output.reject do |message|
         message[:severity] != "INFO" ||
         message[:content].match(/^\[/) ||
-        message[:content].match(/^\w+ lost connection:/) ||
+        message[:content].match(/^\w+.*lost connection/) ||
         message[:content].match(/^\w+\[.*\] logged in with entity id/) ||
         SERVER_MESSAGES.any? { |sm| message[:content].index(sm) == 0 }
       end.map do |message|

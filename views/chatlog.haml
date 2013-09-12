@@ -1,13 +1,13 @@
 %form
-  %input{type: "checkbox", id: "joins", checked: "checked"}
-  Hide join/leave messages?
+  %label
+    %input{type: "checkbox", id: "joins", checked: "checked"}
+    Hide join/leave messages?
 
-%table.table.table-hover.table-responsive
+%table.table.table-hover.table-striped.table-bordered.table-responsive.sortable
   %thead
     %tr
-      %th.timestamp Time
+      %th.timestamp{"data-defaultsort" => "desc"} Time
       %th.player Player
-      %th.avatar Avatar
       %th.content Content
   %tbody
     - @messages.each do |message|
@@ -15,7 +15,7 @@
       - extra_class = "warning" if message[:type] == :join
       %tr{class: "#{message[:type]} #{extra_class}"}
         %td.timestamp= message[:timestamp]
-        %td.player= message[:player]
-        %td.avatar
+        %td.player
           %img{src: "https://minotar.net/avatar/#{message[:player]}/24"}
+          = message[:player]
         %td.content= message[:content]

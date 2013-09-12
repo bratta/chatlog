@@ -9,12 +9,21 @@ module Chatlog
       haml :chatlog
     end
 
+    get "/chatlog.json" do
+      content_type :json
+      parse_full_log.to_json
+    end
+
     private 
 
     def parse_user_messages
-      server_settings = YAML.load_file(File.join(settings.root, "config/minecraft.yml"))
-      log = Chatlog::Parse.new(server_settings["server_log"])
+      log = Chatlog::Parse.new(settings.server_log)
       log.parse.user_messages
+    end
+
+    def parse_full_log
+      log = Chatlog::Parse.new(settings.server_log)
+      log.parse.output
     end
   end
 end
