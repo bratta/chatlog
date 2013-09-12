@@ -1,7 +1,14 @@
 body {
   padding-top: 70px;
 }
+.navbar {
+  background-image: url(/images/linedpaper.png);
+}
 
+table thead th {
+  background-color: #408AD2;
+  color: #efefef;
+}
 table.sortable span.arrow {
     border-style: solid;
     border-width: 5px;
@@ -30,7 +37,7 @@ table.sortable thead th {
 }
 
 table.sortable thead th:hover:not([data-defaultsort=disabled]) {
-    background: #efefef;
+    background: #0C5AA6;
 }
 
 table.sortable thead th div.mozilla {
