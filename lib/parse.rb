@@ -1,6 +1,6 @@
 module Chatlog
   class Parse
-    attr_accessor :logfile, :output
+    attr_accessor :logfile, :output, :tz
 
     REGEX = {
       logline: /^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) \[(\w+)\] (.*)$/
@@ -14,6 +14,7 @@ module Chatlog
     def initialize(logfile)
       @logfile = logfile
       @output = []
+      @tz = TZInfo::Timezone.get("America/Chicago")
     end
 
     def parse
@@ -30,8 +31,8 @@ module Chatlog
       self
     end
 
-    def user_messages
-      @output.reject do |message|
+    def user_messages(filter_private = true)
+      messages = @output.reject do |message|
         message[:severity] != "INFO" ||
         message[:content].match(/^\[/) ||
         message[:content].match(/^\w+.*lost connection/) ||
@@ -39,13 +40,19 @@ module Chatlog
         SERVER_MESSAGES.any? { |sm| message[:content].index(sm) == 0 }
       end.map do |message|
         player, content = split_player_message(message[:content])
+        timestamp = Time.parse(message[:timestamp])
+        tz_identifier = @tz.period_for_utc(timestamp).zone_identifier.to_s
         { 
-          timestamp: message[:timestamp],
+          timestamp: @tz.utc_to_local(timestamp).strftime("%Y/%m/%d %I:%M %P ") + tz_identifier,
           player: player,
           type: type_from_message(message[:content]),
           content: content
         }
       end
+      if filter_private
+        messages.reject! {|message| message[:content].match(/^p\s+/i)}
+      end
+      messages
     end
 
     private
@@ -53,11 +60,12 @@ module Chatlog
     def split_player_message(message)
       results = []
       message.match(/^<?(\w+)>?\s(.*)$/) do |m|
-        results << m[1]
-        results << m[2]
+        full_message, name, content = *m
+        results << name
+        results << content
       end
       if results.empty?
-        message.match(/^* (\w+)\s(.*)$/) do |m|
+        message.match(/^\* (\w+)\s(.*)$/) do |m|
           results << m[1]
           results << "#{m[1]} #{m[2]}"
         end
