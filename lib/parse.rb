@@ -21,7 +21,7 @@ module Chatlog
       if File.exist? @logfile
         IO.foreach(@logfile) do |line|
           line.match(REGEX[:logline]) do |m|
-            @output << { timestamp: Time.parse(m[1]), severity: m[2], content: m[3] }
+            @output << { timestamp: m[1], severity: m[2], content: m[3] }
           end
         end
       else
