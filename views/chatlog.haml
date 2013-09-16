@@ -15,7 +15,7 @@
       - extra_class = "warning" if message[:type] == :join
       - extra_class = "success" if message[:type] == :emote
       %tr{class: "#{message[:type]} #{extra_class}"}
-        %td.timestamp= message[:timestamp]
+        %td.timestamp{data: { dateformat: "YYYY/MM/DD hh:mm a zz" }}= message[:timestamp]
         %td.player
           %img{src: "https://minotar.net/avatar/#{message[:player]}/24"}
           = message[:player]
