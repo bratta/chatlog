@@ -1,1 +1,15 @@
-%h1 Hello, world!
+%h3 Leaderboards - Top Deaths
+%p
+  These are according to the server log file and may differ from the scoreboard
+  count recorded by the game itself. Use this as an estimate and not the gospel
+  truth.
+%table.table.table-hover.table-striped.table-bordered.table-responsive.sortable
+  %thead
+    %tr
+      %th.player Player
+      %th.deaths{"data-defaultsort" => "desc"} Deaths
+  %tbody
+    - @top_deaths.each do |top_death|
+      %tr
+        %td= top_death[0]
+        %td= top_death[1]

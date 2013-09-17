@@ -32,6 +32,7 @@ module Chatlog
     end
 
     def user_messages(filter_private = true)
+      self.parse if @output.empty?
       messages = @output.reject do |message|
         message[:severity] != "INFO" ||
         message[:content].match(/^\[/) ||
@@ -53,6 +54,14 @@ module Chatlog
         messages.reject! {|message| message[:content].match(/^p\s+/i)}
       end
       messages
+    end
+
+    def top_deaths(n=10)
+      self.parse if @output.empty?
+      user_messages.select { |m| m[:type] == :death }.reduce({}) do |memo, m|
+        memo[m[:player]] = memo[m[:player]].to_i + 1
+        memo
+      end.sort_by {|k,v| -v}.first(n)
     end
 
     private
