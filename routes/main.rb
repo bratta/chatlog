@@ -1,6 +1,7 @@
 module Chatlog
   class Application < Sinatra::Application
     get "/" do
+      @server_running = server_running?
       @active = ""
       @top_deaths = parse_top_deaths
       haml :main
@@ -32,6 +33,17 @@ module Chatlog
     def parse_full_log
       log = Chatlog::Parse.new(settings.server_log)
       log.parse.output
+    end
+
+    def server_running?
+      output = `ps ax | grep java | grep minecraft | grep -v grep | grep -v SCREEN`
+      pid = nil
+      if output
+        output.match(/^\s*(\d+)/) do |m|
+          pid = m[1]
+        end
+      end
+      pid
     end
   end
 end

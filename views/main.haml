@@ -1,3 +1,22 @@
+.panel.panel-info
+  .panel-heading
+    %h4 Server Info
+  .panel-body
+    %ul
+      %li
+        %strong
+          SERVER STATUS:
+          - if @server_running
+            %span.label.label-success Up
+          - else
+            %span.label.label-danger Down
+      %li
+        %strong Server Address:
+        minecraft.hissboom.net
+      %li
+        %strong Version:
+        1.7 snapshot branch, currently 13w37b
+
 %h3 Leaderboards - Top Deaths
 %p
   These are according to the server log file and may differ from the scoreboard
