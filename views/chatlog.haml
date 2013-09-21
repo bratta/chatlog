@@ -14,6 +14,7 @@
       - extra_class = "danger" if message[:type] == :death
       - extra_class = "warning" if message[:type] == :join
       - extra_class = "success" if message[:type] == :emote
+      - extra_class = "success" if message[:type] == :achievement
       %tr{class: "#{message[:type]} #{extra_class}"}
         %td.timestamp{data: { dateformat: "YYYY/MM/DD hh:mm a zz" }}= message[:timestamp]
         %td.player

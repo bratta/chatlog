@@ -8,7 +8,7 @@ module Chatlog
     SERVER_MESSAGES = [
       "Turned off", "Saving", "Saved", "Stopping", "Stopped", "Closing", "Closed", "Default game type", 
       "Generating", "Preparing", "Done (", "Starting", "Started", "Loading", "Turned on", "[Server]",
-      "Setting", "Disconnecting"
+      "Setting", "Disconnecting", "UUID of player"
     ]
 
     def initialize(logfile)
@@ -89,6 +89,8 @@ module Chatlog
         type = :chat
       elsif message.match(/^\* \w+/)
         type = :emote
+      elsif message.match(/^\w+ has just earned the achievement/)
+        type = :achievement
       elsif message.match(/^\w+ (left|joined) the game$/)
         type = :join
       end
